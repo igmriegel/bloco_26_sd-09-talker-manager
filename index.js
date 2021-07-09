@@ -18,11 +18,22 @@ app.get('/', (_request, response) => {
 app.get('/talker', rescue(async (_request, response) => {
   const talkerList = await utils.getAllTalkers(TALKERS_DATA);
 
-  if (talkerList.length === 0) {
+  if (!talkerList[0]) {
     response.status(HTTP_OK_STATUS).send([]);
   }
 
   response.status(HTTP_OK_STATUS).send(talkerList);
+}));
+
+app.get('/talker/:id', rescue(async (request, response) => {
+  const { id } = request.params;
+  const [talker] = await utils.getTalkerById(TALKERS_DATA, id);
+
+  if (!talker) {
+    response.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+
+  response.status(HTTP_OK_STATUS).send(talker);
 }));
 
 app.listen(PORT, () => {
