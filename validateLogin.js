@@ -1,3 +1,8 @@
+/**
+ * Validates the provided email against a REGEX pattern
+ * @param {*} email 
+ * @returns 
+ */
 const validateEmail = (email) => {
   if (!email) return [400, 'O campo "email" é obrigatório'];
 
@@ -8,6 +13,11 @@ const validateEmail = (email) => {
   return ['email succesfuly validated'];
 };
 
+/**
+ * Validates the password length
+ * @param {*} pass 
+ * @returns 
+ */
 const validatePassword = (pass) => {
   if (!pass) return [400, 'O campo "password" é obrigatório'];
 
@@ -17,6 +27,12 @@ const validatePassword = (pass) => {
   return ['password succesfuly validated'];
 };
 
+/**
+ * 
+ * @param {*} email 
+ * @param {*} pass 
+ * @returns Array containing an HTTP status and validation msg
+ */
 const validateLoginInfo = (email, pass) => {
   const emailValidation = validateEmail(email);
   const passValidation = validatePassword(pass); 

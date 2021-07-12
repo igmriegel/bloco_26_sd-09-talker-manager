@@ -1,4 +1,4 @@
-const { readFile } = require('fs/promises');
+const { readFile, writeFile } = require('fs/promises');
 
 /**
  * @param {string} path Relative path of the file you want read.
@@ -22,7 +22,41 @@ const getTalkerById = async (path, id) => {
   return talkerArray.filter((item) => parseInt(item.id, 10) === parseInt(id, 10));
 };
 
+/**
+ * 
+ * @param {*} path 
+ * @returns 
+ */
+const getAllTokens = async (path) => {
+  const tokens = await readFile(path, 'utf8');
+  const tokensList = JSON.parse(tokens).map((i) => i.token);
+
+  return tokensList;
+};
+
+/**
+ * 
+ * @param {*} path 
+ * @param {*} tokenObj 
+ */
+const saveNewToken = async (path, tokenObj) => {
+  const tokens = await readFile(path, 'utf8');
+  const newTokenList = JSON.parse(tokens);
+
+  newTokenList.push(tokenObj);
+
+  writeFile(path, JSON.stringify(newTokenList, null, ' '), { flag: 'w+' })
+    .then(() => {
+      console.log('Arquivo salvo');
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
+  getAllTokens,
+  saveNewToken,
 };
