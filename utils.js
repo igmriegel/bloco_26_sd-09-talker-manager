@@ -47,7 +47,7 @@ const saveNewToken = async (path, tokenObj) => {
 
   writeFile(path, JSON.stringify(newTokenList, null, ' '), { flag: 'w+' })
     .then(() => {
-      console.log('Arquivo salvo');
+      console.log(`Arquivo salvo, token: ${tokenObj.token} adicionado a lista`);
     })
     .catch((err) => {
       console.error(err);

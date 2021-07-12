@@ -1,9 +1,9 @@
 const express = require('express');
 const rescue = require('express-rescue');
 const bodyParser = require('body-parser');
-const { randomBytes } = require('crypto');
 const utils = require('./utils');
 const validateLoginInfo = require('./validateLogin');
+const generateAndSaveToken = require('./generateToken');
 
 const app = express();
 app.use(bodyParser.json());
@@ -38,7 +38,7 @@ app.get('/talker/:id', rescue(async (request, response) => {
   response.status(HTTP_OK_STATUS).send(talker);
 }));
 
-app.post('/login', (request, response) => {
+app.post('/login', rescue(async (request, response) => {
   const { email, password } = request.body;
   const [status, message] = validateLoginInfo(email, password);
 
@@ -47,9 +47,10 @@ app.post('/login', (request, response) => {
     response.status(status).json({ message });
   }
 
-  const token = randomBytes(8).toString('hex');
+  const token = await generateAndSaveToken('./loginTokens.json', email);
+
   response.status(HTTP_OK_STATUS).json({ token });
-});
+}));
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
