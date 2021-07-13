@@ -1,4 +1,4 @@
-const { readFile, writeFile } = require('fs');
+const { readFile, writeFile } = require('fs/promises');
 
 /**
  * @param {string} path Relative path of the file you want read.
