@@ -11,6 +11,25 @@ const getAllTalkers = async (path) => {
 };
 
 /**
+ * 
+ * @param {*} path 
+ * @param {*} tokenObj 
+ */
+ const saveNewTalker = async (path, talkerObj) => {
+  const talkers = await getAllTalkers(path);
+  const newId = Math.max(...talkers.map(({ id }) => id)) + 1;
+  talkers.push({ id: newId, ...talkerObj });
+
+  writeFile(path, JSON.stringify(talkers, null, ' '), { flag: 'w+' })
+    .then(() => {
+      console.log('File saved!');
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+/**
  * @param {string} path Relative path of the file you want read.
  * @param {number} id Id of the talker
  * @returns Returns the talker info
@@ -25,7 +44,7 @@ const getTalkerById = async (path, id) => {
 /**
  * 
  * @param {*} path 
- * @returns 
+ * @returns Array containing all generated tokens
  */
 const getAllTokens = async (path) => {
   const tokens = await readFile(path, 'utf8');
@@ -57,6 +76,7 @@ const saveNewToken = async (path, tokenObj) => {
 module.exports = {
   getAllTalkers,
   getTalkerById,
+  saveNewTalker,
   getAllTokens,
   saveNewToken,
 };

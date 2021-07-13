@@ -3,6 +3,8 @@ const rescue = require('express-rescue');
 const bodyParser = require('body-parser');
 const utils = require('./utils');
 const validateLoginInfo = require('./validateLogin');
+const validateToken = require('./validateToken');
+const validateTalker = require('./validateTalker');
 const generateAndSaveToken = require('./generateToken');
 
 const app = express();
@@ -25,6 +27,25 @@ app.get('/talker', rescue(async (_request, response) => {
   }
 
   response.status(HTTP_OK_STATUS).send(talkerList);
+}));
+
+app.post('/talker', rescue(async (request, response) => {
+  const { body, headers: { authorization } } = request;
+  const [tokenValid, status, message] = await validateToken(authorization);
+  const [validationStatus, validationMsg] = validateTalker(body);
+
+  if (!tokenValid) {
+    response.status(status).json({ message });
+  }
+  if (validationMsg) {
+    response.status(validationStatus).json({ message: validationMsg });
+  }
+
+  await utils.saveNewTalker('./talker.json', body);
+  const talkerList = await utils.getAllTalkers('./talker.json');
+  const [savedTalker] = talkerList.slice(-1);
+
+  response.status(201).json(savedTalker);
 }));
 
 app.get('/talker/:id', rescue(async (request, response) => {
