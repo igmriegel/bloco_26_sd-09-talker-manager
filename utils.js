@@ -94,11 +94,25 @@ const saveNewToken = async (path, tokenObj) => {
     });
 };
 
+const deleteTalker = async (path, talkerId) => {
+  const talkers = await getAllTalkers(path);
+  const filteredTalkers = talkers.filter((i) => parseInt(i.id, 10) !== parseInt(talkerId, 10));
+
+  writeFile(path, JSON.stringify(filteredTalkers, null, '  '), { flag: 'w+' })
+  .then(() => {
+    console.log('Item deleted. File saved!');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
   saveNewTalker,
   editTalker,
+  deleteTalker,
   getAllTokens,
   saveNewToken,
 };

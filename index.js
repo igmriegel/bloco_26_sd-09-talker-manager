@@ -74,6 +74,21 @@ app.put('/talker/:id', rescue(async (request, response) => {
   response.status(200).json(talker);
 }));
 
+app.delete('/talker/:id', rescue(async (request, response) => {
+  const { id } = request.params;
+  const { headers: { authorization } } = request;
+  const [tokenValid, status, message] = await validateToken(authorization);
+  const successMessage = 'Pessoa palestrante deletada com sucesso';
+
+  if (!tokenValid) {
+    response.status(status).json({ message });
+  }
+
+  await utils.deleteTalker(TALKERS_DATA, id);
+
+  response.status(200).json({ message: successMessage });
+}));
+
 app.post('/login', rescue(async (request, response) => {
   const { email, password } = request.body;
   const [status, message] = validateLoginInfo(email, password);
