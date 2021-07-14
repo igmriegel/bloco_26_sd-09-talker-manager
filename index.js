@@ -48,6 +48,20 @@ app.post('/talker', rescue(async (request, response) => {
   response.status(201).json(savedTalker);
 }));
 
+app.get('/talker/search', rescue(async (request, response) => {
+  const { query: { q } } = request;
+  const { headers: { authorization } } = request;
+  const [tokenValid, status, message] = await validateToken(authorization);
+
+  if (!tokenValid) {
+    response.status(status).json({ message });
+  }
+
+  const queryResult = await utils.getTalkersByText(TALKERS_DATA, q);
+
+  response.status(HTTP_OK_STATUS).json(queryResult);
+}));
+
 app.get('/talker/:id', rescue(async (request, response) => {
   const { id } = request.params;
   const [talker] = await utils.getTalkerById(TALKERS_DATA, id);

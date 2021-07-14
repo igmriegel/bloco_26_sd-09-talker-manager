@@ -107,9 +107,22 @@ const deleteTalker = async (path, talkerId) => {
   });
 };
 
+const getTalkersByText = async (path, searchTerm) => {
+  const talkerList = await getAllTalkers(path);
+  console.log(searchTerm);
+
+  const searchResult = talkerList.filter(({ name }) => name.includes(String(searchTerm)));
+
+  // applyFilters
+  console.log(searchResult);
+
+  return searchResult;
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
+  getTalkersByText,
   saveNewTalker,
   editTalker,
   deleteTalker,
