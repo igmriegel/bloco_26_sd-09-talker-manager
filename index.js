@@ -41,8 +41,8 @@ app.post('/talker', rescue(async (request, response) => {
     response.status(validationStatus).json({ message: validationMsg });
   }
 
-  await utils.saveNewTalker('./talker.json', body);
-  const talkerList = await utils.getAllTalkers('./talker.json');
+  await utils.saveNewTalker(TALKERS_DATA, body);
+  const talkerList = await utils.getAllTalkers(TALKERS_DATA);
   const [savedTalker] = talkerList.slice(-1);
 
   response.status(201).json(savedTalker);
@@ -57,6 +57,21 @@ app.get('/talker/:id', rescue(async (request, response) => {
   }
 
   response.status(HTTP_OK_STATUS).send(talker);
+}));
+
+app.put('/talker/:id', rescue(async (request, response) => {
+  const { id } = request.params;
+  const { body, headers: { authorization } } = request;
+  const [tokenValid, status, message] = await validateToken(authorization);
+  const [validationStatus, validationMsg] = validateTalker(body);
+
+  if (!tokenValid) return response.status(status).json({ message });
+  if (validationMsg) return response.status(validationStatus).json({ message: validationMsg });
+
+  await utils.editTalker(TALKERS_DATA, body, id);
+  const [talker] = await utils.getTalkerById(TALKERS_DATA, id);
+
+  response.status(200).json(talker);
 }));
 
 app.post('/login', rescue(async (request, response) => {

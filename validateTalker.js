@@ -12,10 +12,11 @@ const validateRate = (rating) => {
 const validateTalkObj = (talk) => {
   try {
     const { rate, watchedAt } = talk;
+    const typeRate = typeof rate !== 'number';
     const invalidRate = validateRate(rate);
     const invalidDate = validateDate(watchedAt);
 
-    if (!rate || !watchedAt) {
+    if (typeRate || !watchedAt) {
       return 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios';
     }
 
